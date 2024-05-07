@@ -45,67 +45,88 @@ async function searchMovies() {
     });
 }
 
-function loadFavoritesPage() {
-    const content = document.getElementById('content');
-    content.innerHTML = '<h1>Favorites</h1><p>Coming soon...</p>';
-}
-
 /**
- * Shows the details of a movie.
- * @param {number} movieId - The ID of the movie to display.
+ * Parodo filmo detales.
+ * @param {number} movieId - Filmo ID, kurio detales norime parodyti.
  */
 async function showMovieDetails(movieId) {
-    // Fetch movie details from TMDb API
+    // Paimame filmo detales iš TMDb API
     const movie = await fetchFromTMDb(`/movie/${movieId}`);
     
-    // Get the content element to display the movie details
+    // Gauname vietą puslapyje, kur rodysime filmo detales
     const content = document.getElementById('content');
     
-    // Create the movie details HTML
+    // Sukuriame HTML struktūrą filmo detalėms
     content.innerHTML = `
         <h1>${movie.title}</h1>
         <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="${movie.title}" />
         <p>${movie.overview}</p>
         <button id="favoriteButton">
-            ${isFavorite(movieId) ? "Remove from Favorites" : "Add to Favorites"}
+            ${isFavorite(movieId) ? "Pašalinti iš mėgstamiausių" : "Pridėti į mėgstamiausius"}
         </button>
     `;
     
-    // Add event listener to the favorite button
+    // Pridedame įvykio klausiklį prie mygtuko
     document.getElementById('favoriteButton').addEventListener('click', () => toggleFavorite(movieId));
 }
 
 /**
- * Checks if a movie is in the favorites list.
- * @param {number} movieId - The ID of the movie to check.
- * @returns {boolean} - True if the movie is a favorite, false otherwise.
+ * Patikrina, ar filmas yra mėgstamiausių sąraše.
+ * @param {number} movieId - Filmo ID, kurį norime patikrinti.
+ * @returns {boolean} - True, jei filmas yra mėgstamiausių sąraše, kitaip - false.
  */
 function isFavorite(movieId) {
-    // Retrieve favorites from localStorage or set to an empty array
+    // Gauti mėgstamiausius iš localStorage arba nustatyti tuščią masyvą
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     return favorites.includes(movieId);
 }
 
 /**
- * Toggles the favorite status of a movie.
- * @param {number} movieId - The ID of the movie to toggle.
+ * Perjungia filmo būseną mėgstamiausių sąraše.
+ * @param {number} movieId - Filmo ID, kurio būseną norime perjungti.
  */
 function toggleFavorite(movieId) {
-    // Retrieve favorites from localStorage or set to an empty array
+    // Gauti mėgstamiausius iš localStorage arba nustatyti tuščią masyvą
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     
-    // Add or remove the movie from favorites
+    // Pridėti arba pašalinti filmą iš mėgstamiausių
     if (favorites.includes(movieId)) {
         favorites = favorites.filter(id => id !== movieId);
     } else {
         favorites.push(movieId);
     }
     
-    // Save the updated favorites to localStorage
+    // Išsaugoti atnaujintą mėgstamiausių sąrašą į localStorage
     localStorage.setItem('favorites', JSON.stringify(favorites));
     
-    // Refresh the movie details page
+    // Atnaujinti filmo detales
     showMovieDetails(movieId);
+}
+
+/**
+ * Užkrauna mėgstamiausių puslapį.
+ */
+async function loadFavoritesPage() {
+    // Gauti mėgstamiausius iš localStorage arba nustatyti tuščią masyvą
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    // Gauname vietą puslapyje, kur rodysime mėgstamiausius filmus
+    const content = document.getElementById('content');
+    content.innerHTML = '<h1>Mėgstamiausi</h1>';
+    const movieList = document.createElement('div');
+    content.appendChild(movieList);
+
+    // Pereiname per mėgstamiausių sąrašą ir rodome kiekvieną filmą
+    for (const movieId of favorites) {
+        const movie = await fetchFromTMDb(`/movie/${movieId}`);
+        const movieItem = document.createElement('div');
+        movieItem.innerHTML = `
+            <h2>${movie.title}</h2>
+            <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="${movie.title}" />
+            <p>${movie.overview}</p>
+            <button onclick="toggleFavorite(${movieId})">Pašalinti iš mėgstamiausių</button>
+        `;
+        movieList.appendChild(movieItem);
+    }
 }
 
 
