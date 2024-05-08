@@ -3,18 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Finder</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+        #content {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .meniu-item {
+            margin: 10px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="#" id="searchPage">Search</a></li>
-            <li><a href="#" id="favoritesPage">Favorites</a></li>
-        </ul>
-    </nav>
-    <main id="content"></main>
-
-    <script src="script.js" defer></script>
+    <h1>My first Webpack project</h1>
+    <div id="content"></div>
+    <script src="/dist/main.js"></script>
 </body>
 </html>
