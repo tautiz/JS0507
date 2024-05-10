@@ -7,27 +7,38 @@ interface MeniuState {
     state: boolean;
 }
 
-
-interface Meniu extends MeniuState {
+interface MeniuInterface extends MeniuState {
     items: MeniuItem[];
     position: string;
-    addMeniuElement (element: MeniuItem): void;
+    addMeniuElement(element: MeniuItem): void;
     removeMeniuElement(): void;
 }
 
-const meniu: Meniu = {
-    items: [],
-    position: 'top',
-    state: true,
+class Meniu {
 
-    addMeniuElement(element: MeniuElementas) {
+    private items: MeniuItem[] = [];
+    private position: string;
+    private state: boolean;
+    
+    constructor(private possition: string, private state: boolean) {}
+
+    addMeniuElement(element: MeniuElementas): void{
         this.items.push(element);
-    },
+    }
 
-    removeMeniuElement() {
+    removeMeniuElement(): void {
         this.items.pop();
     }
+
+    setPosition(p: string): void{
+        this.position = p;
+    }
 };
+
+const meniu = new Meniu('top', true);
+// meniu.position = 'bottom'; // Error: Property 'position' is private and only accessible within class 'Meniu'.
+meniu.setPosition('left');
+console.log(meniu);
 
 function generateMeniuItem(item: MeniuItem) {
     let link = document.createElement('a');
@@ -46,14 +57,14 @@ function generateMeniu(meniu: Meniu) {
         meniuList.appendChild(generateMeniuItem(item));
     }
 
-    if(content !== null) {
+    if (content !== null) {
         content.appendChild(meniuList);
     }
 }
 
-meniu.addMeniuElement({ name: 'Home', url: '/'});
+meniu.addMeniuElement({ name: 'Home', url: '/' });
 meniu.addMeniuElement({ name: 'About', url: '/about' });
 meniu.addMeniuElement({ name: 'Contact', url: '/contact' });
-meniu.addMeniuElement({ name: 'Services', url: '/services'});
+meniu.addMeniuElement({ name: 'Services', url: '/services' });
 
 generateMeniu(meniu);
